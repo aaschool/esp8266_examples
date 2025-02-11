@@ -1,4 +1,3 @@
-
 # Google App Script Backend Code
 
 To be pasted into the App Script `Code.gs` file.
@@ -79,4 +78,72 @@ function doPost(e) {
     return ContentService.createTextOutput("Error! Request body empty or in incorrect format.");
   }
 }
+```
+
+# Google App Script Frontend Code
+
+To be pasted in a different App Script project than the Backend, in the `Code.gs` file:
+
+```
+function doGet() {
+  return HtmlService.createHtmlOutputFromFile('frontend.html');
+}
+
+function getSensorData() {
+  // Get the active spreadsheet and sheet
+  var ss = SpreadsheetApp.getActiveSpreadsheet();
+  var ss = SpreadsheetApp.openById('CHANGEME-SpreadsheetID');
+  var sheet = ss.getSheetByName("SensorData");
+
+  // Get all data from the sheet
+  var values = sheet.getDataRange().getValues();
+  console.log(values);
+  sensorValue = values[values.length - 1][1];
+  console.log(sensorValue);
+  return sensorValue;
+}
+```
+
+To be pasted in an HTML file called `frontend.html`:
+
+```
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Photocell Data Visualization</title>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/1.4.0/p5.min.js"></script>
+</head>
+<body>
+  <script>
+    let sensorValue = 0; 
+
+    function setup() {
+      createCanvas(600, 400);
+      loadData(); // Load initial data
+      setInterval(loadData, 10000); // Update every 10 seconds
+    }
+
+    function draw() {
+      background(220);
+      
+      // Calculate the diameter based on sensorValue (map to a suitable range)
+      let diameter = map(sensorValue, 0, 1023, 50, 300); 
+      
+      // Draw the circle
+      fill(255, 0, 0); // Red color
+      ellipse(width / 2, height / 2, diameter, diameter);
+    }
+
+    function loadData() {
+      google.script.run.withSuccessHandler(processData).getSensorData();
+    }
+
+    function processData(data) {
+      console.log(data);
+      sensorValue = data;
+      redraw(); // Redraw the canvas with the new data
+    }
+  </script>
+</body>
+</html>
 ```
