@@ -110,7 +110,7 @@ To be pasted in an HTML file called `frontend.html`:
 <!DOCTYPE html>
 <html>
 <head>
-  <title>Photocell Data Visualization</title>
+  <title>Analogue Data Visualization</title>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/1.4.0/p5.min.js"></script>
 </head>
 <body>
